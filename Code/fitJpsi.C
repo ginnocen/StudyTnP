@@ -116,7 +116,7 @@ void fitJpsi(){
     }//loop over candidates  
   }// loop over events
   
-  TFile*foutput=new TFile("foutput.root","recreate");
+  TFile*foutput=new TFile("Results/foutput.root","recreate");
   foutput->cd();
   
   for(int i = 0; i < nMuPtBin; i++){
@@ -151,7 +151,7 @@ void fitJpsi(){
   hTrigPtPass[5]->Draw();
   canvasPass->cd(7);
   hTrigPtPass[6]->Draw();
-  canvasPass->SaveAs("canvasPass.eps");
+  canvasPass->SaveAs("Plots/canvasPass.eps");
 
   TCanvas*canvasFail=new TCanvas("canvasFail","canvasFail",650,600);
   canvasFail->Divide(4,2);
@@ -169,7 +169,7 @@ void fitJpsi(){
   hTrigPtFail[5]->Draw();
   canvasFail->cd(7);
   hTrigPtFail[6]->Draw();
-  canvasFail->SaveAs("canvasFail.eps");
+  canvasFail->SaveAs("Plots/canvasFail.eps");
 
   TCanvas*canvasAll=new TCanvas("canvasAll","canvasAll",650,600);
   canvasAll->Divide(4,2);
@@ -187,7 +187,7 @@ void fitJpsi(){
   hTrigPtAll[5]->Draw();
   canvasAll->cd(7);
   hTrigPtAll[6]->Draw();
-  canvasAll->SaveAs("canvasAll.eps");
+  canvasAll->SaveAs("Plots/canvasAll.eps");
 
 }
 
