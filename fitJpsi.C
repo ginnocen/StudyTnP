@@ -49,6 +49,8 @@ void fitJpsi(){
   }
   
   int Run,size,Event;
+  int isTriggered1[NUM_BX];
+  int isTriggered2[NUM_BX];
   Float_t pt[NUM_BX];
   Float_t mass[NUM_BX];
   Float_t genpt[NUM_BX];
@@ -91,6 +93,9 @@ void fitJpsi(){
   ntuple->SetBranchAddress("outerTrackisNonnull1",outerTrackisNonnull1);
   ntuple->SetBranchAddress("outerTrackisNonnull2",outerTrackisNonnull2);
   ntuple->SetBranchAddress("gen",gen);
+  ntuple->SetBranchAddress("isTriggered1",isTriggered1);
+  ntuple->SetBranchAddress("isTriggered2",isTriggered2);
+
   
   Int_t entries = (Int_t)ntuple->GetEntries();
   
@@ -100,7 +105,11 @@ void fitJpsi(){
       if (IsMuonInAcceptance(pt1[j],pt1[j],eta1[j])&&IsMuonInAcceptance(pt2[j],pt2[j],eta2[j])){
         for(int m = 0; m < nMuPtBin; m++){
           if((pt1[j]>MuPtBin[m]&&pt1[j]>MuPtBin[m+1])&&(pt2[j]>MuPtBin[m]&&pt2[j]>MuPtBin[m+1])){
-		    hTrigPtAll[m]->Fill(mass[j]);
+            
+            hTrigPtAll[m]->Fill(mass[j]);
+            if(isTriggered1[j]&&isTriggered2[j]) hTrigPtPass[m]->Fill(mass[j]);
+		    else hTrigPtFail[m]->Fill(mass[j]);
+          
           }//if pt in proper range
         }//loop over pt of muons
       }//muons in acceptance
@@ -126,24 +135,60 @@ void fitJpsi(){
   foutput->Close();
   delete foutput;
   
-  TCanvas*canvas=new TCanvas("canvas","canvas",650,600);
-  canvas->Divide(4,2);
-  canvas->cd(1);
+  TCanvas*canvasPass=new TCanvas("canvasPass","canvasPass",650,600);
+  canvasPass->Divide(4,2);
+  canvasPass->cd(1);
+  hTrigPtPass[0]->Draw();
+  canvasPass->cd(2);
+  hTrigPtPass[1]->Draw();
+  canvasPass->cd(3);
+  hTrigPtPass[2]->Draw();
+  canvasPass->cd(4);
+  hTrigPtPass[3]->Draw();
+  canvasPass->cd(5);
+  hTrigPtPass[4]->Draw();
+  canvasPass->cd(6);
+  hTrigPtPass[5]->Draw();
+  canvasPass->cd(7);
+  hTrigPtPass[6]->Draw();
+  canvasPass->SaveAs("canvasPass.eps");
+
+  TCanvas*canvasFail=new TCanvas("canvasFail","canvasFail",650,600);
+  canvasFail->Divide(4,2);
+  canvasFail->cd(1);
+  hTrigPtFail[0]->Draw();
+  canvasFail->cd(2);
+  hTrigPtFail[1]->Draw();
+  canvasFail->cd(3);
+  hTrigPtFail[2]->Draw();
+  canvasFail->cd(4);
+  hTrigPtFail[3]->Draw();
+  canvasFail->cd(5);
+  hTrigPtFail[4]->Draw();
+  canvasFail->cd(6);
+  hTrigPtFail[5]->Draw();
+  canvasFail->cd(7);
+  hTrigPtFail[6]->Draw();
+  canvasFail->SaveAs("canvasFail.eps");
+
+  TCanvas*canvasAll=new TCanvas("canvasAll","canvasAll",650,600);
+  canvasAll->Divide(4,2);
+  canvasAll->cd(1);
   hTrigPtAll[0]->Draw();
-  canvas->cd(2);
+  canvasAll->cd(2);
   hTrigPtAll[1]->Draw();
-  canvas->cd(3);
+  canvasAll->cd(3);
   hTrigPtAll[2]->Draw();
-  canvas->cd(4);
+  canvasAll->cd(4);
   hTrigPtAll[3]->Draw();
-  canvas->cd(5);
+  canvasAll->cd(5);
   hTrigPtAll[4]->Draw();
-  canvas->cd(6);
+  canvasAll->cd(6);
   hTrigPtAll[5]->Draw();
-  canvas->cd(7);
+  canvasAll->cd(7);
   hTrigPtAll[6]->Draw();
-  canvas->SaveAs("canvas.eps");
-  
+  canvasAll->SaveAs("canvasAll.eps");
+
 }
 
 bool IsMuonInAcceptance(Float_t pt,Float_t p,Float_t eta){
