@@ -17,7 +17,8 @@ void fitJpsi(){
   
   bool IsMuonInAcceptance(Float_t,Float_t,Float_t);
   
-  TString infname_mc="/data/bmeson/MC_Jpsi/jpsi-Kp.root";
+  //TString infname_mc="/data/bmeson/MC_Jpsi/jpsi-Kp.root"; 
+  TString infname_mc="/data/bmeson/Data_Jpsi/jpsi.root";
   TFile *inf_mc = new TFile(infname_mc.Data());
   
   TTree *ntuple = (TTree*) inf_mc->Get("ntJpsi");
@@ -134,60 +135,6 @@ void fitJpsi(){
   
   foutput->Close();
   delete foutput;
-  
-  TCanvas*canvasPass=new TCanvas("canvasPass","canvasPass",650,600);
-  canvasPass->Divide(4,2);
-  canvasPass->cd(1);
-  hTrigPtPass[0]->Draw();
-  canvasPass->cd(2);
-  hTrigPtPass[1]->Draw();
-  canvasPass->cd(3);
-  hTrigPtPass[2]->Draw();
-  canvasPass->cd(4);
-  hTrigPtPass[3]->Draw();
-  canvasPass->cd(5);
-  hTrigPtPass[4]->Draw();
-  canvasPass->cd(6);
-  hTrigPtPass[5]->Draw();
-  canvasPass->cd(7);
-  hTrigPtPass[6]->Draw();
-  canvasPass->SaveAs("Plots/canvasPass.eps");
-
-  TCanvas*canvasFail=new TCanvas("canvasFail","canvasFail",650,600);
-  canvasFail->Divide(4,2);
-  canvasFail->cd(1);
-  hTrigPtFail[0]->Draw();
-  canvasFail->cd(2);
-  hTrigPtFail[1]->Draw();
-  canvasFail->cd(3);
-  hTrigPtFail[2]->Draw();
-  canvasFail->cd(4);
-  hTrigPtFail[3]->Draw();
-  canvasFail->cd(5);
-  hTrigPtFail[4]->Draw();
-  canvasFail->cd(6);
-  hTrigPtFail[5]->Draw();
-  canvasFail->cd(7);
-  hTrigPtFail[6]->Draw();
-  canvasFail->SaveAs("Plots/canvasFail.eps");
-
-  TCanvas*canvasAll=new TCanvas("canvasAll","canvasAll",650,600);
-  canvasAll->Divide(4,2);
-  canvasAll->cd(1);
-  hTrigPtAll[0]->Draw();
-  canvasAll->cd(2);
-  hTrigPtAll[1]->Draw();
-  canvasAll->cd(3);
-  hTrigPtAll[2]->Draw();
-  canvasAll->cd(4);
-  hTrigPtAll[3]->Draw();
-  canvasAll->cd(5);
-  hTrigPtAll[4]->Draw();
-  canvasAll->cd(6);
-  hTrigPtAll[5]->Draw();
-  canvasAll->cd(7);
-  hTrigPtAll[6]->Draw();
-  canvasAll->SaveAs("Plots/canvasAll.eps");
 
 }
 
