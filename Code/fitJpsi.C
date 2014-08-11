@@ -105,7 +105,7 @@ void fitJpsi(){
     for(int j=0;j<size;j++){
       if (IsMuonInAcceptance(pt1[j],pt1[j],eta1[j])&&IsMuonInAcceptance(pt2[j],pt2[j],eta2[j])){
         for(int m = 0; m < nMuPtBin; m++){
-          if((pt1[j]>MuPtBin[m]&&pt1[j]>MuPtBin[m+1])&&(pt2[j]>MuPtBin[m]&&pt2[j]>MuPtBin[m+1])){
+          if((pt1[j]>MuPtBin[m]&&pt1[j]<MuPtBin[m+1])&&(pt2[j]>MuPtBin[m]&&pt2[j]<MuPtBin[m+1])){
             
             hTrigPtAll[m]->Fill(mass[j]);
             if(isTriggered1[j]&&isTriggered2[j]) hTrigPtPass[m]->Fill(mass[j]);
