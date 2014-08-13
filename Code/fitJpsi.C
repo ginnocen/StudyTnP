@@ -23,7 +23,7 @@ void fitJpsi(){
   bool IsTag(Float_t, Float_t, Float_t, Int_t, bool, bool);
 
   //TString infname_mc="/data/bmeson/MC_Jpsi/jpsi-Kp.root"; 
-  TString infname_mc="/data/bmeson/Data_Jpsi/jpsi.root";
+  TString infname_mc="/data/ginnocen/TnPinputsMC/nt_BoostedMC_20140707_BdJpsiKstar_pPb_TnP.root";
   TFile *inf_mc = new TFile(infname_mc.Data());
   
   TTree *ntuple = (TTree*) inf_mc->Get("ntJpsi");
@@ -110,12 +110,12 @@ void fitJpsi(){
   Bool_t outerTrackisNonnull1[NUM_BX];
   Bool_t outerTrackisNonnull2[NUM_BX];
   int gen[NUM_BX];
+  Bool_t isTrackerMuArbitrated1[NUM_BX];
+  Bool_t isTrackerMuArbitrated2[NUM_BX];
+  Bool_t isTMOneStationTight1[NUM_BX];
+  Bool_t isTMOneStationTight2[NUM_BX];
   Bool_t calomuon1[NUM_BX];
   Bool_t calomuon2[NUM_BX];
-  Bool_t track_cut1[NUM_BX];
-  Bool_t track_cut2[NUM_BX];
-  Bool_t glb_cut1[NUM_BX];
-  Bool_t glb_cut2[NUM_BX];
 
   ntuple->SetBranchAddress("Run",&Run);
   ntuple->SetBranchAddress("Event",&Event);
@@ -140,15 +140,15 @@ void fitJpsi(){
   ntuple->SetBranchAddress("id2",id2);
   ntuple->SetBranchAddress("outerTrackisNonnull1",outerTrackisNonnull1);
   ntuple->SetBranchAddress("outerTrackisNonnull2",outerTrackisNonnull2);
+  ntuple->SetBranchAddress("isTrackerMuArbitrated1",isTrackerMuArbitrated1);
+  ntuple->SetBranchAddress("isTrackerMuArbitrated2",isTrackerMuArbitrated2);
+  ntuple->SetBranchAddress("isTMOneStationTight1",isTMOneStationTight1);
+  ntuple->SetBranchAddress("isTMOneStationTight2",isTMOneStationTight2);
   ntuple->SetBranchAddress("gen",gen);
   ntuple->SetBranchAddress("isTriggered1",isTriggered1);
   ntuple->SetBranchAddress("isTriggered2",isTriggered2);
   ntuple->SetBranchAddress("calomuon1",calomuon1);
   ntuple->SetBranchAddress("calomuon2",calomuon2);
-  ntuple->SetBranchAddress("track_cut1",track_cut1);
-  ntuple->SetBranchAddress("track_cut2",track_cut2);
-  ntuple->SetBranchAddress("glb_cut1",glb_cut1);
-  ntuple->SetBranchAddress("glb_cut2",glb_cut2);
   
   Int_t entries = (Int_t)ntuple->GetEntries();
   
@@ -158,9 +158,19 @@ void fitJpsi(){
 
     for(int j=0;j<size;j++)
     {
-      if(IsTag(pt1[j],p1[j],eta1[j],isTriggered1[j],track_cut1[j],glb_cut1[j]) || IsTag(pt2[j],p2[j],eta2[j],isTriggered2[j],track_cut2[j],glb_cut2[j]))
+      Bool_t track_cut1 = false;
+      Bool_t track_cut2 = false;
+      Bool_t glb_cut1 = false;
+      Bool_t glb_cut2 = false;
+
+      if(*id1==1) track_cut1 = true;
+      if(*id2==1) track_cut2 = true;
+      if(isTrackerMuArbitrated1&&isTMOneStationTight1) glb_cut1 = true;
+      if(isTrackerMuArbitrated2&&isTMOneStationTight2) glb_cut2 = true;
+
+      if(IsTag(pt1[j],p1[j],eta1[j],isTriggered1[j],track_cut1,glb_cut1) || IsTag(pt2[j],p2[j],eta2[j],isTriggered2[j],track_cut2,glb_cut2))
       {
-        if(IsTag(pt1[j],p1[j],eta1[j],isTriggered1[j],track_cut1[j],glb_cut1[j]))
+        if(IsTag(pt1[j],p1[j],eta1[j],isTriggered1[j],track_cut1,glb_cut1))
         {
           for(int m = 0; m < nMuPtBin; m++)
           {
@@ -170,20 +180,20 @@ void fitJpsi(){
               if(outerTrackisNonnull2[j])
               {
                 hTrkPtAll[m]->Fill(mass[j]);
-                if(track_cut2[j]&&isTracker2[j]) hTrkPtPass[m]->Fill(mass[j]);
+                if(track_cut2&&isTracker2[j]) hTrkPtPass[m]->Fill(mass[j]);
                 else hTrkPtFail[m]->Fill(mass[j]);
               }//tracking efficinecy over
 
               //muon ID efficiency
-              if(calomuon2[j]&&track_cut2[j])
+              if(calomuon2[j]&&track_cut2)
               {
                 hMuIdPtAll[m]->Fill(mass[j]);
-                if(track_cut2[j]&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j])) hMuIdPtPass[m]->Fill(mass[j]);
+                if(track_cut2&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j])) hMuIdPtPass[m]->Fill(mass[j]);
                 else hMuIdPtFail[m]->Fill(mass[j]);
               }//muon ID efficiency over
 
               //trigger efficiency
-              if(track_cut2[j]&&glb_cut2[j]&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j]))
+              if(track_cut2&&glb_cut2&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j]))
               {
                 hTrigPtAll[m]->Fill(mass[j]);
                 if(isTriggered2[j]) hTrigPtPass[m]->Fill(mass[j]);
@@ -200,20 +210,20 @@ void fitJpsi(){
               if(outerTrackisNonnull1[j])
               {
                 hTrkEtaAll[m]->Fill(mass[j]);
-                if(track_cut2[j]&&isTracker2[j]) hTrkEtaPass[m]->Fill(mass[j]);
+                if(track_cut2&&isTracker2[j]) hTrkEtaPass[m]->Fill(mass[j]);
                 else hTrkEtaFail[m]->Fill(mass[j]);
               }//tracking efficinecy over
 
               //muon ID efficiency
-              if(calomuon2[j]&&track_cut2[j])
+              if(calomuon2[j]&&track_cut2)
               {
                 hMuIdEtaAll[m]->Fill(mass[j]);
-                if(track_cut2[j]&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j])) hMuIdEtaPass[m]->Fill(mass[j]);
+                if(track_cut2&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j])) hMuIdEtaPass[m]->Fill(mass[j]);
                 else hMuIdEtaFail[m]->Fill(mass[j]);
               }//muon ID efficiency over
 
               //trigger efficiency
-              if(track_cut2[j]&&glb_cut2[j]&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j]))
+              if(track_cut2&&glb_cut2&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j]))
               {
                 hTrigEtaAll[m]->Fill(mass[j]);
                 if(isTriggered2[j]) hTrigEtaPass[m]->Fill(mass[j]);
@@ -232,20 +242,20 @@ void fitJpsi(){
               if(outerTrackisNonnull1[j])
               {
                 hTrkPtAll[m]->Fill(mass[j]);
-                if(track_cut1[j]&&isTracker1[j]) hTrkPtPass[m]->Fill(mass[j]);
+                if(track_cut1&&isTracker1[j]) hTrkPtPass[m]->Fill(mass[j]);
                 else hTrkPtFail[m]->Fill(mass[j]);
               }//tracking efficinecy over
 
               //muon ID efficiency
-              if(calomuon1[j]&&track_cut1[j])
+              if(calomuon1[j]&&track_cut1)
               {
                 hMuIdPtAll[m]->Fill(mass[j]);
-                if(track_cut1[j]&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j])) hMuIdPtPass[m]->Fill(mass[j]);
+                if(track_cut1&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j])) hMuIdPtPass[m]->Fill(mass[j]);
                 else hMuIdPtFail[m]->Fill(mass[j]);
               }//muon ID efficiency over
 
               //trigger efficiency
-              if(track_cut1[j]&&glb_cut1[j]&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j]))
+              if(track_cut1&&glb_cut1&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j]))
               {
                 hTrigPtAll[m]->Fill(mass[j]);
                 if(isTriggered1[j]) hTrigPtPass[m]->Fill(mass[j]);
@@ -262,20 +272,20 @@ void fitJpsi(){
               if(outerTrackisNonnull1[j])
               {
                 hTrkEtaAll[m]->Fill(mass[j]);
-                if(track_cut1[j]&&isTracker1[j]) hTrkEtaPass[m]->Fill(mass[j]);
+                if(track_cut1&&isTracker1[j]) hTrkEtaPass[m]->Fill(mass[j]);
                 else hTrkEtaFail[m]->Fill(mass[j]);
               }//tracking efficinecy over
 
               //muon ID efficiency
-              if(calomuon1[j]&&track_cut1[j])
+              if(calomuon1[j]&&track_cut1)
               {
                 hMuIdEtaAll[m]->Fill(mass[j]);
-                if(track_cut1[j]&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j])) hMuIdEtaPass[m]->Fill(mass[j]);
+                if(track_cut1&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j])) hMuIdEtaPass[m]->Fill(mass[j]);
                 else hMuIdEtaFail[m]->Fill(mass[j]);
               }//muon ID efficiency over
 
               //trigger efficiency
-              if(track_cut1[j]&&glb_cut1[j]&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j]))
+              if(track_cut1&&glb_cut1&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j]))
               {
                 hTrigEtaAll[m]->Fill(mass[j]);
                 if(isTriggered1[j]) hTrigEtaPass[m]->Fill(mass[j]);
