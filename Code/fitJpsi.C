@@ -177,17 +177,17 @@ void fitJpsi(){
               //muon ID efficiency
               if(calomuon2[j]&&track_cut2[j])
               {
-                hMuIDPtAll[m]->Fill(mass[j]);
-                if(track_cut2[j]&&isTracker2[j]&&IsMuonAcceptance(pt2[j],p2[j],eta2[j])) hMuIDPtPass[m]->Fill(mass[j]);
-                else hMuIDPtFail[m]->Fill(mass[j]);
+                hMuIdPtAll[m]->Fill(mass[j]);
+                if(track_cut2[j]&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j])) hMuIdPtPass[m]->Fill(mass[j]);
+                else hMuIdPtFail[m]->Fill(mass[j]);
               }//muon ID efficiency over
 
               //trigger efficiency
-              if(track_cut2[j]&&glb_cut&&isTracker2[j]&&IsMuonAcceptance(pt2[j],p2[j],eta2[j]))
+              if(track_cut2[j]&&glb_cut2[j]&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j]))
               {
-                hTrgPtAll[m]->Fill(mass[j]);
-                if(isTriggered2[j]) hTrgPtPass[m]->Fill(mass[j]);
-                else hTrgPtFail[m]->Fill(mass[j]);
+                hTrigPtAll[m]->Fill(mass[j]);
+                if(isTriggered2[j]) hTrigPtPass[m]->Fill(mass[j]);
+                else hTrigPtFail[m]->Fill(mass[j]);
               }//trigger efficiency over
             }
           }//loop over pt
@@ -207,17 +207,17 @@ void fitJpsi(){
               //muon ID efficiency
               if(calomuon2[j]&&track_cut2[j])
               {
-                hMuIDEtaAll[m]->Fill(mass[j]);
-                if(track_cut2[j]&&isTracker2[j]&&IsMuonAcceptance(pt2[j],p2[j],eta2[j])) hMuIDEtaPass[m]->Fill(mass[j]);
-                else hMuIDEtaFail[m]->Fill(mass[j]);
+                hMuIdEtaAll[m]->Fill(mass[j]);
+                if(track_cut2[j]&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j])) hMuIdEtaPass[m]->Fill(mass[j]);
+                else hMuIdEtaFail[m]->Fill(mass[j]);
               }//muon ID efficiency over
 
               //trigger efficiency
-              if(track_cut2[j]&&glb_cut&&isTracker2[j]&&IsMuonAcceptance(pt2[j],p2[j],eta2[j]))
+              if(track_cut2[j]&&glb_cut2[j]&&isTracker2[j]&&IsMuonInAcceptance(pt2[j],p2[j],eta2[j]))
               {
-                hTrgEtaAll[m]->Fill(mass[j]);
-                if(isTriggered2[j]) hTrgEtaPass[m]->Fill(mass[j]);
-                else hTrgEtaFail[m]->Fill(mass[j]);
+                hTrigEtaAll[m]->Fill(mass[j]);
+                if(isTriggered2[j]) hTrigEtaPass[m]->Fill(mass[j]);
+                else hTrigEtaFail[m]->Fill(mass[j]);
               }//trigger efficiency over
             }
           }//loop over eta
@@ -239,17 +239,17 @@ void fitJpsi(){
               //muon ID efficiency
               if(calomuon1[j]&&track_cut1[j])
               {
-                hMuIDPtAll[m]->Fill(mass[j]);
-                if(track_cut1[j]&&isTracker1[j]&&IsMuonAcceptance(pt1[j],p1[j],eta1[j])) hMuIDPtPass[m]->Fill(mass[j]);
-                else hMuIDPtFail[m]->Fill(mass[j]);
+                hMuIdPtAll[m]->Fill(mass[j]);
+                if(track_cut1[j]&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j])) hMuIdPtPass[m]->Fill(mass[j]);
+                else hMuIdPtFail[m]->Fill(mass[j]);
               }//muon ID efficiency over
 
               //trigger efficiency
-              if(track_cut1[j]&&glb_cut&&isTracker1[j]&&IsMuonAcceptance(pt1[j],p1[j],eta1[j]))
+              if(track_cut1[j]&&glb_cut1[j]&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j]))
               {
-                hTrgPtAll[m]->Fill(mass[j]);
-                if(isTriggered1[j]) hTrgPtPass[m]->Fill(mass[j]);
-                else hTrgPtFail[m]->Fill(mass[j]);
+                hTrigPtAll[m]->Fill(mass[j]);
+                if(isTriggered1[j]) hTrigPtPass[m]->Fill(mass[j]);
+                else hTrigPtFail[m]->Fill(mass[j]);
               }//trigger efficiency over
             }
           }//loop over pt
@@ -269,17 +269,17 @@ void fitJpsi(){
               //muon ID efficiency
               if(calomuon1[j]&&track_cut1[j])
               {
-                hMuIDEtaAll[m]->Fill(mass[j]);
-                if(track_cut1[j]&&isTracker1[j]&&IsMuonAcceptance(pt1[j],p1[j],eta1[j])) hMuIDEtaPass[m]->Fill(mass[j]);
-                else hMuIDEtaFail[m]->Fill(mass[j]);
+                hMuIdEtaAll[m]->Fill(mass[j]);
+                if(track_cut1[j]&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j])) hMuIdEtaPass[m]->Fill(mass[j]);
+                else hMuIdEtaFail[m]->Fill(mass[j]);
               }//muon ID efficiency over
 
               //trigger efficiency
-              if(track_cut1[j]&&glb_cut&&isTracker1[j]&&IsMuonAcceptance(pt1[j],p1[j],eta1[j]))
+              if(track_cut1[j]&&glb_cut1[j]&&isTracker1[j]&&IsMuonInAcceptance(pt1[j],p1[j],eta1[j]))
               {
-                hTrgEtaAll[m]->Fill(mass[j]);
-                if(isTriggered1[j]) hTrgEtaPass[m]->Fill(mass[j]);
-                else hTrgEtaFail[m]->Fill(mass[j]);
+                hTrigEtaAll[m]->Fill(mass[j]);
+                if(isTriggered1[j]) hTrigEtaPass[m]->Fill(mass[j]);
+                else hTrigEtaFail[m]->Fill(mass[j]);
               }//trigger efficiency over
             }
           }//loop over eta
@@ -323,8 +323,9 @@ bool IsMuonInAcceptance(Float_t pt,Float_t p,Float_t eta){
   isselected=(abs(eta)<1.3&&pt>3.3)||(abs(eta)>1.3&&abs(eta)<2.2&&p>2.9)||(abs(eta)>2.2&&abs(eta)<2.4&&pt>0.8);
   return isselected;
 }
-bool IsTag(Float_t, pt, Float_t p, Float_t eta, Int_t trigger, bool track_cut, bool glb_cut)
+bool IsTag(Float_t pt, Float_t p, Float_t eta, Int_t trigger, bool track_cut, bool glb_cut)
 {
   bool isTag=false;
-  if(IsMuonInAcceptance(pt, p, eta) && trigger && track_cut && glb_cut) isTag=True;
+  isTag=(IsMuonInAcceptance(pt, p, eta) && trigger && track_cut && glb_cut);
+  return isTag;
 }
