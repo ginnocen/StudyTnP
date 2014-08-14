@@ -23,7 +23,7 @@ void fitJpsi(){
   Bool_t IsTag(Bool_t, Int_t, Bool_t, Bool_t);
 
   //TString infname_mc="/data/bmeson/Data_Jpsi/jpsi.root"; 
-  TString infname_mc="/data/ginnocen/TnPinputsMC/nt_BoostedMC_20140707_BdJpsiKstar_pPb_TnP.root";
+  TString infname_mc="/data/ginnocen/TnPinputsMC/nt_BoostedMC_20140806_HIJINGemb_BuJpsiK_TuneZ2star_5TeV.root";
   TFile *inf_mc = new TFile(infname_mc.Data());
   
   TTree *ntuple = (TTree*) inf_mc->Get("ntJpsi");
@@ -179,11 +179,11 @@ void fitJpsi(){
       isacceptance1=IsMuonInAcceptance(pt1[j],p1[j],eta1[j]);
       isacceptance2=IsMuonInAcceptance(pt2[j],p2[j],eta2[j]);
       
-      //isTag1=IsTag(isacceptance1,isTriggered1[j],qualitycut1,glb_cut1);
-      //isTag2=IsTag(isacceptance2,isTriggered2[j],qualitycut2,glb_cut2);
+      isTag1=IsTag(isacceptance1,isTriggered1[j],qualitycut1,glb_cut1);
+      isTag2=IsTag(isacceptance2,isTriggered2[j],qualitycut2,glb_cut2);
 
-      isTag1=IsTag(isacceptance1,1,qualitycut1,glb_cut1);   //TRIGGER MATCHING IS FAKE
-      isTag2=IsTag(isacceptance2,1,qualitycut2,glb_cut2);   //NEEDS TO BE FIXED WITH NEW SAMPLES
+      //isTag1=IsTag(isacceptance1,1,qualitycut1,glb_cut1);   //TRIGGER MATCHING IS FAKE
+      //isTag2=IsTag(isacceptance2,1,qualitycut2,glb_cut2);   //NEEDS TO BE FIXED WITH NEW SAMPLES
 
       if(isTag1||isTag2){
         if(isTag1){
