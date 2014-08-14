@@ -114,6 +114,9 @@ void fitJpsi(){
   Bool_t isTrackerMuArbitrated2[NUM_BX];
   Bool_t isTMOneStationTight1[NUM_BX];
   Bool_t isTMOneStationTight2[NUM_BX];
+  Int_t isCalo1[NUM_BX];
+  Int_t isCalo2[NUM_BX];
+  
 
   ntuple->SetBranchAddress("Run",&Run);
   ntuple->SetBranchAddress("Event",&Event);
@@ -145,7 +148,9 @@ void fitJpsi(){
   ntuple->SetBranchAddress("gen",gen);
   ntuple->SetBranchAddress("isTriggered1",isTriggered1);
   ntuple->SetBranchAddress("isTriggered2",isTriggered2);
-  
+  ntuple->SetBranchAddress("isCalo1",isCalo1);
+  ntuple->SetBranchAddress("isCalo2",isCalo2);
+
   Bool_t qualitycut1;
   Bool_t qualitycut2;
   Bool_t glb_cut1;
@@ -182,9 +187,6 @@ void fitJpsi(){
       isTag1=IsTag(isacceptance1,isTriggered1[j],qualitycut1,glb_cut1);
       isTag2=IsTag(isacceptance2,isTriggered2[j],qualitycut2,glb_cut2);
 
-      //isTag1=IsTag(isacceptance1,1,qualitycut1,glb_cut1);   //TRIGGER MATCHING IS FAKE
-      //isTag2=IsTag(isacceptance2,1,qualitycut2,glb_cut2);   //NEEDS TO BE FIXED WITH NEW SAMPLES
-
       if(isTag1||isTag2){
         if(isTag1){
           
@@ -198,7 +200,7 @@ void fitJpsi(){
               }//tracking efficinecy over
 
               //muon ID efficiency
-              if(qualitycut2){
+              if(qualitycut2&&isCalo2[j]){
                 hMuIdPtAll[m]->Fill(mass[j]);
                 if(isTracker2[j]&&isacceptance2) hMuIdPtPass[m]->Fill(mass[j]);
                 else hMuIdPtFail[m]->Fill(mass[j]);
@@ -225,7 +227,7 @@ void fitJpsi(){
               }//tracking efficinecy over
 
               //muon ID efficiency
-              if(qualitycut1){
+              if(qualitycut1&&isCalo1[j]){
                 hMuIdPtAll[m]->Fill(mass[j]);
                 if(isTracker1[j]&&isacceptance1) hMuIdPtPass[m]->Fill(mass[j]);
                 else hMuIdPtFail[m]->Fill(mass[j]);
@@ -255,7 +257,7 @@ void fitJpsi(){
               }//tracking efficinecy over
 
               //muon ID efficiency
-              if(qualitycut2){
+              if(qualitycut2&&isCalo2[j]){
                 hMuIdEtaAll[m]->Fill(mass[j]);
                 if(isTracker2[j]&&isacceptance2) hMuIdEtaPass[m]->Fill(mass[j]);
                 else hMuIdEtaFail[m]->Fill(mass[j]);
@@ -282,7 +284,7 @@ void fitJpsi(){
               }//tracking efficinecy over
 
               //muon ID efficiency
-              if(qualitycut1){
+              if(qualitycut1&&isCalo1[j]){
                 hMuIdEtaAll[m]->Fill(mass[j]);
                 if(isTracker1[j]&&isacceptance1) hMuIdEtaPass[m]->Fill(mass[j]);
                 else hMuIdEtaFail[m]->Fill(mass[j]);
