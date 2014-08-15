@@ -6,8 +6,12 @@
 #define NUM_BX 9000
 
 
-void fitJpsi(){
-  TFile*foutput=new TFile("Results/foutput.root","recreate");
+void fitJpsi(bool isDataInput=true){
+
+  TString outputfile;
+  if(isDataInput) outputfile="ResultsData/foutput.root";
+  else outputfile="ResultsMC/foutput.root";
+  TFile*foutput=new TFile(outputfile.Data(),"recreate");
   double massTrg, massTrk, massID;
   double passTrg, passTrk, passID;
   double ptTrg, ptTrk, ptID;
@@ -46,13 +50,15 @@ void fitJpsi(){
   
   Bool_t IsMuonInAcceptance(Float_t,Float_t,Float_t);
   Bool_t IsTag(Bool_t, Int_t, Bool_t, Bool_t);
-
-  //TString infname_mc="/data/bmeson/Data_Jpsi/jpsi.root"; 
-  TString infname_mc="/data/ginnocen/TnPinputsMC/nt_BoostedMC_20140806_HIJINGemb_BuJpsiK_TuneZ2star_5TeV.root";
-  TFile *inf_mc = new TFile(infname_mc.Data());
   
-  TTree *ntuple = (TTree*) inf_mc->Get("ntJpsi");
-  TTree *nt_mcgen = (TTree*)inf_mc->Get("ntGen");
+  TString infname;
+  
+  if(isDataInput) infname="/data/ginnocen/TnPinputsData/nt_BoostedMC_20140802_PAMuon_HIRun2013_28Sep2013_v1.root";
+  else infname="/data/ginnocen/TnPinputsMC/nt_BoostedMC_20140806_HIJINGemb_BuJpsiK_TuneZ2star_5TeV.root";
+  TFile *inf = new TFile(infname.Data());
+  
+  TTree *ntuple = (TTree*) inf->Get("ntJpsi");
+  TTree *nt_mcgen = (TTree*)inf->Get("ntGen");
   ntuple->AddFriend(nt_mcgen);
   
   //Pt probes
