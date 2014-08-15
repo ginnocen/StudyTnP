@@ -40,6 +40,19 @@ void FitTnP(){
   const double MuPtBin[nMuPtBin+1] = {0.0, 1.5, 3.0, 4.5, 6.0, 9.0, 20.0, 30.0};
   const double MuEtaBin[nMuEtaBin+1] = {-2.4, -1.5, -0.5, 0.5, 1.5, 2.4};
 
+  RooCategory sampleTrig("sampleTrig", "sampleTrig");
+  sampleTrig.defineType("Pass");
+  sampleTrig.defineType("Fail");
+  sampleTrig.defineType("All");
+  RooCategory sampleMuId("sampleMuId", "sampleMuId");
+  sampleMuId.defineType("Pass");
+  sampleMuId.defineType("Fail");
+  sampleMuId.defineType("All");
+  RooCategory sampleTrk("sampleTrk", "sampleTrk");
+  sampleTrk.defineType("Pass");
+  sampleTrk.defineType("Fail");
+  sampleTrk.defineType("All");
+
   //pt histogram
   TH1D* hTrigPtPass[nMuPtBin];
   TH1D* hTrigPtFail[nMuPtBin];
@@ -66,30 +79,9 @@ void FitTnP(){
   TH1D* hMuIdEtaFail[nMuPtBin];
   TH1D* hMuIdEtaAll[nMuPtBin];
 
-  //pt function
-  TF1* tf1mumu_trg_pt_all[nMuPtBin];
-  TF1* tf1mumu_trg_pt_pass[nMuPtBin];
-  TF1* tf1mumu_trg_pt_fail[nMuPtBin];
-  TF1* tf1mumu_trg_pt_all[nMuPtBin];
-  TF1* tf1mumu_trg_pt_pass[nMuPtBin];
-  TF1* tf1mumu_trg_pt_fail[nMuPtBin];
-  TF1* tf1mumu_trk_pt_all[nMuPtBin];
-  TF1* tf1mumu_trk_pt_pass[nMuPtBin];
-  TF1* tf1mumu_trk_pt_fail[nMuPtBin];
-
-  //eta function
-  TF1* tf1mumu_trg_eta_all[nMuEtaBin];
-  TF1* tf1mumu_trg_eta_pass[nMuEtaBin];
-  TF1* tf1mumu_trg_eta_fail[nMuEtaBin];
-  TF1* tf1mumu_trg_eta_all[nMuEtaBin];
-  TF1* tf1mumu_trg_eta_pass[nMuEtaBin];
-  TF1* tf1mumu_trg_eta_fail[nMuEtaBin];
-  TF1* tf1mumu_trk_eta_all[nMuEtaBin];
-  TF1* tf1mumu_trk_eta_pass[nMuEtaBin];
-  TF1* tf1mumu_trk_eta_fail[nMuEtaBin];
-
   TFile*finput=new TFile("../Code/Results/foutput.root","read");
   finput->cd();
+
   //get pt histogram
   for(int i = 0; i < nMuPtBin; i++)
   {
@@ -117,42 +109,109 @@ void FitTnP(){
     hMuIdFail[i]=(TH1D*)finput->Get(Form("hMuIdEtaFail%d",i));
     hMuIdAll[i]=(TH1D*)finput->Get(Form("hMuIdEtaAll%d",i));
   }
-  
+
+  //make CB function
   RooRealVar mean_CB("mean_CB", "mean_CB", 3.1, 3.0, 3.2);
   RooRealVar sigma_CB("sigma_CB", "sigma_CB", 0.05);
   isgma_CB.setConstant(kFALSE);
   RooRealVar alpha_CB("alpha_CB", "alpha_CB", 2.0, 1.0, 5.0);
   RooRealVar n_CB("n_CB", "n_CB", 1, 0.5, 100.0);
+
   RooCBShape signal_CB_Pass("signal_CB_Pass", "signal_CB_Pass", mass, mean_CB, sigma_CB, alpha_CB, n_CB);
-  RooCBShape signal_CB_Fail("signal_CB_Fail", "signal_CB_Fail", mass, meab_CB, sigma_CB, alpha_CB, n_CB);
+  RooCBShape signal_CB_Fail("signal_CB_Fail", "signal_CB_Fail", mass, mean_CB, sigma_CB, alpha_CB, n_CB);
+  RooCBShape signal_CB_All("signal_CB_All", "signal_CB_sAll", mass, mean_CB, sigma_CB, alpha_CB, n_CB);
 
-  RooRealVar cheb_p1Pass("cheb_paPass", "cheb_p1Pass", 0., -1., +1.);
-  RooRealVar cheb_p2Pass("cheb_p2Pass", "cheb_p2Pass", 0., -1., +1.);
-  RooChebychev background_cheb_Pass("background_cheb_Pass", "background_cheb_Pass", mass, RooArgList(cheb_p1Pass, cheb_p2Pass));
-  RooRealVar cheb_p1Fail("cheb_p1Fail", "cheb_p1Fail", 0., -1., +1.);
-  RooRealVar cheb_p2Fail("cheb_p2Fail", "cheb_p2Fail", 0., -1., +1.);
-  RooChebychev background_cheb_Fail("background_cheb_Fail", "background_cheb_Fail", mass, RooArgList(cheb_p1Fail, cheb_p2Fail));
-
-  RooRealVar lp("lp", "lp", 0.0, -5., 5.);
-  RooRealVar lf("lf", "lf", 0.0, -5., 5.);
-  RooExponential background_exp_Pass("background_exp_Pass", "background_exp_Pass", mass, lp);
-  RooExponential background_exp_Fail("background_exp_Fail", "background_exp_Fail", mass, lf);
-
+  //make 2gauss function
   RooRealVar mean_gaus("mean_gaus", "mean_gaus", 3.1, 3.0, 3.2);
   RooRealVar sigma1_gaus("sigma1_gaus", "sigma1_gaus", 0.15, 0.05, 0.25);
   RooRealVar sigma2_gaus("sigma2_gaus", "sigma2_gaus", 0.02, 0.01, 0.1);
   RooGaussian gauss1("gauss1", "gauss1", mass, mean_gaus, sigma1_gaus);
   RooGaussian gauss2("gauss2", "gauss2", mass, mean_gaus, sigma2_gaus);
   RooRealVar mfrac_gaus("mfrac_gaus", "mfrac_gaus", 0.2, 0.0, 1.0);
+
   RooAddPdf signal_gauss_Pass("signal_gauss_Pass", "signal_gauss_Pass", RooArgList(gauss1, gauss2), RooArgList(mfrac_gaus));
   RooAddPdf signal_gauss_Fail("signal_gauss_Fail", "signal_gauss_Fail", RooArgList(gauss1, gauss2), RooArgList(mfrac_gaus));
+  RooAddPdf signal_gauss_All("signal_gauss_All", "signal_gauss_All", RooArgList(gauss1, gauss2), RooArgList(mfrac_gaus));
 
+  //make Chebyschev function
+  RooRealVar cheb_p1Pass("cheb_paPass", "cheb_p1Pass", 0., -1., +1.);
+  RooRealVar cheb_p2Pass("cheb_p2Pass", "cheb_p2Pass", 0., -1., +1.);
+  RooChebychev background_cheb_Pass("background_cheb_Pass", "background_cheb_Pass", mass, RooArgList(cheb_p1Pass, cheb_p2Pass));
+  RooRealVar cheb_p1Fail("cheb_p1Fail", "cheb_p1Fail", 0., -1., +1.);
+  RooRealVar cheb_p2Fail("cheb_p2Fail", "cheb_p2Fail", 0., -1., +1.);
+  RooChebychev background_cheb_Fail("background_cheb_Fail", "background_cheb_Fail", mass, RooArgList(cheb_p1Fail, cheb_p2Fail));
+  RooRealVar cheb_p1All("cheb_p1All", "cheb_p1All", 0., -1., +1.);
+  RooRealVar cheb_p2Fail("cheb_p2All", "cheb_p2All", 0., -1., +1.);
+  RooChebychev background_cheb_All("background_cheb_All", "background_cheb_All", mass, RooArgList(cheb_p1All, cheb_p2All));
+
+  //make exponential function
+  RooRealVar lp("lp", "lp", 0.0, -5., 5.);
+  RooRealVar lf("lf", "lf", 0.0, -5., 5.);
+  RooRealVar la("la", "la", 0.0, -5., 5.);
+  RooExponential background_exp_Pass("background_exp_Pass", "background_exp_Pass", mass, lp);
+  RooExponential background_exp_Fail("background_exp_Fail", "background_exp_Fail", mass, lf);
+  RooExponential background_exp_All("background_exp_All", "background_exp_All", mass, la);
+
+  //define PDF
   RooAddPdf model_CB_cheb_Pass("model_CB_cheb_Pass", "model_CB_cheb_Pass", RooArgList(signal_CB_Pass, background_cheb_Pass), RooArgList(nsigPass, nbkgPass));
   RooAddPdf model_CB_cheb_Fail("model_CB_cheb_Fail", "model_CB_cheb_Fail", RooArgList(signal_CB_Fail, background_cheb_Fail), RooArgList(nsigFail, nbkgFail));
-  RooAddPdf model_CB_exp_Pass("model_CB_exp_Pass", "model_CB_Pass", RooArgList(signal_CB_Pass, background_exp_Pass), RooArgList(nsigPass, nbkgPass));
-  RooAddPdf model_CB_exp_Fail("model_CB_exp_Fail", "model_CB_Fail", RooArgList(signal_CB_Fail, background_exp_Fail), RooArgList(nsigFail, nbkgFail));
+  RooAddPdf model_CB_cheb_All("model_CB_cheb_All", "model_CB_cheb_All", RooArgList(signal_CB_All, background_cheb_All), RooArgList(nsigAll, nbkgAll));
+
+  RooAddPdf model_CB_exp_Pass("model_CB_exp_Pass", "model_CB_exp_Pass", RooArgList(signal_CB_Pass, background_exp_Pass), RooArgList(nsigPass, nbkgPass));
+  RooAddPdf model_CB_exp_Fail("model_CB_exp_Fail", "model_CB_exp_Fail", RooArgList(signal_CB_Fail, background_exp_Fail), RooArgList(nsigFail, nbkgFail));
+  RooAddPdf model_CB_exp_All("model_CB_exp_All", "model_CB_exp_All", RooArgList(signal_CB_All, background_exp_All), RooArgList(nsigAll, nbkgAll));
+
   RooAddPdf model_gaus_cheb_Pass("model_gaus_cheb_Pass", "model_gaus_cheb_Pass", RooArgList(signal_gaus_Pass, background_cheb_Pass), RooArgList(nsigPass, nbkgPass));
   RooAddPdf model_gaus_cheb_Fail("model_gaus_cheb_Fail", "model_gaus_cheb_Fail", RooArgList(signal_gaus_Fail, background_cheb_Fail), RooArgList(nsigFail, nbkgFail));
+  RooAddPdf model_gaus_cheb_All("model_gaus_cheb_All", "model_gaus_cheb_All", RooArgList(signal_gaus_All, background_cheb_All), RooArgList(nsigAll, nbkgAll));
+
+  //fitting pt
+  for(int i = 0; i < nMuPtBin; i++)
+  {
+    //set axis variable
+    RooRealVar x("x", "mass", mumulow, mumuhigh, "GeV");
+    RooRealVar xtrk("x", "mass", mumutrklow, mumutrkhigh, "GeV");
+
+    //set histogram
+    RooDataHist dataTrigPass("dataTrigPass", "dataTrigPass", x, hTrigPtPass[i]);
+    RooDataHist dataTrigFail("dataTrigFail", "dataTrigFail", x, hTrigPtFail[i]);
+    RooDataHist dataTrigAll("dataTrigAll", "dataTrigAll", x, hTrigPtAll[i]);
+
+    RooDataHist dataMuIdPass("dataMuIdPass", "dataMuIdPass", x, hPtMuIdPass[i]);
+    RooDataHist dataMuIdFail("dataMuIdFail", "dataMuIdFail", x, hPtMuIdFail[i]);
+    RooDataHist dataMuIdAll("dataMuIdAll", "dataMuIdAll", x, hPtMuIdAll[i]);
+
+    RooDataHist dataTrkPass("dataTrkPass", "dataTrkPass", xtrk, hTrkPtPass[i]);
+    RooDataHist dataTrkFail("dataTrkFail", "dataTrkFail", xtrk, hTrkPtFail[i]);
+    RooDataHist dataTrkAll("dataTrkAll", "dataTrkAll", xtrk, hTrkPtAll[i]);
+
+    //fit
+    RooSimultaneous simPdf("simPdf", "simPdf", sample);
+  }
+  
+  //fitting eta
+  for(int i = 0; i < nMuEtaBin; i++)
+  {
+    //set axis variable
+    RooRealVar x("x", "mass", mumulow, mumuhigh, "GeV");
+    RooRealVar xtrk("x", "mass", mumutrklow, mumutrkhigh, "GeV");
+
+    //set histogram
+    RooDataHist dataTrigPass("dataTrigPass", "dataTrigPass", x, hTrigEtaPass[i]);
+    RooDataHist dataTrigFail("dataTrigFail", "dataTrigFail", x, hTrigEtaFail[i]);
+    RooDataHist dataTrigAll("dataTrigAll", "dataTrigAll", x, hTrigEtaAll[i]);
+
+    RooDataHist dataMuIdPass("dataMuIdPass", "dataMuIdPass", x, hEtaMuIdPass[i]);
+    RooDataHist dataMuIdFail("dataMuIdFail", "dataMuIdFail", x, hEtaMuIdFail[i]);
+    RooDataHist dataMuIdAll("dataMuIdAll", "dataMuIdAll", x, hEtaMuIdAll[i]);
+
+    RooDataHist dataTrkPass("dataTrkPass", "dataTrkPass", x, hTrkEtaPass[i]);
+    RooDataHist dataTrkFail("dataTrkFail", "dataTrkFail", x, hTrkEtaFail[i]);
+    RooDataHist dataTrkAll("dataTrkAll", "dataTrkAll", x, hTrkEtaAll[i]);
+  }
+
+
+
 
   RooSimultaneous simPdf("simPdf", "simPdf", sample);
 
