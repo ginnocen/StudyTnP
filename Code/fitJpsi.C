@@ -231,7 +231,7 @@ void fitJpsi(){
               if(qualitycut2&&isCalo2[j]){
                 hMuIdPtAll[m]->Fill(mass[j]);
                 massID=mass[j]; ptID = pt2[j]; etaID = eta2[j]; passID = 0;
-                if(isTracker2[j]&&isacceptance2){ hMuIdPtPass[m]->Fill(mass[j]); passTrg=1; }
+                if(isTracker2[j]&&isacceptance2){ hMuIdPtPass[m]->Fill(mass[j]); passID=1; }
                 else hMuIdPtFail[m]->Fill(mass[j]);
                 TnPtreeID->Fill();
               }//muon ID efficiency over
@@ -240,7 +240,7 @@ void fitJpsi(){
               if(qualitycut2&&glb_cut2&&isTracker2[j]&&isacceptance2){
                 hTrigPtAll[m]->Fill(mass[j]);
                 massTrg=mass[j]; ptTrg = pt2[j]; etaTrg = eta2[j]; passTrg = 0;
-                if(isTriggered2[j]) {hTrigPtPass[m]->Fill(mass[j]); passID = 1;}
+                if(isTriggered2[j]) {hTrigPtPass[m]->Fill(mass[j]); passTrg = 1;}
                 else hTrigPtFail[m]->Fill(mass[j]);
                 TnPtreeTrg->Fill();
               }//trigger efficiency over
@@ -273,7 +273,7 @@ void fitJpsi(){
               if(qualitycut1&&glb_cut1&&isTracker1[j]&&isacceptance1){
                 hTrigPtAll[m]->Fill(mass[j]);
                 massTrg=mass[j]; ptTrg = pt1[j]; etaTrg = eta1[j]; passTrg = 0;
-                if(isTriggered1[j]) {hTrigPtPass[m]->Fill(mass[j]); passID = 1;}
+                if(isTriggered1[j]) {hTrigPtPass[m]->Fill(mass[j]); passTrg = 1;}
                 else hTrigPtFail[m]->Fill(mass[j]);
                 TnPtreeTrg->Fill();
               }//trigger efficiency over
@@ -300,7 +300,7 @@ void fitJpsi(){
               if(qualitycut2&&isCalo2[j]){
                 hMuIdEtaAll[m]->Fill(mass[j]);
                 massID=mass[j]; etaID = eta2[j]; etaID = eta2[j]; passID = 0;
-                if(isTracker2[j]&&isacceptance2){ hMuIdEtaPass[m]->Fill(mass[j]); passTrg=1; }
+                if(isTracker2[j]&&isacceptance2){ hMuIdEtaPass[m]->Fill(mass[j]); passID=1; }
                 else hMuIdEtaFail[m]->Fill(mass[j]);
                 TnPtreeID->Fill();
               }//muon ID efficiency over
@@ -309,7 +309,7 @@ void fitJpsi(){
               if(qualitycut2&&glb_cut2&&isTracker2[j]&&isacceptance2){
                 hTrigEtaAll[m]->Fill(mass[j]);
                 massTrg=mass[j]; etaTrg = eta2[j]; etaTrg = eta2[j]; passTrg = 0;
-                if(isTriggered2[j]) {hTrigEtaPass[m]->Fill(mass[j]); passID = 1;}
+                if(isTriggered2[j]) {hTrigEtaPass[m]->Fill(mass[j]); passTrg = 1;}
                 else hTrigEtaFail[m]->Fill(mass[j]);
                 TnPtreeTrg->Fill();
               }//trigger efficiency over
@@ -342,7 +342,7 @@ void fitJpsi(){
               if(qualitycut1&&glb_cut1&&isTracker1[j]&&isacceptance1){
                 hTrigEtaAll[m]->Fill(mass[j]);
                 massTrg=mass[j]; etaTrg = eta1[j]; etaTrg = eta1[j]; passTrg = 0;
-                if(isTriggered1[j]) {hTrigEtaPass[m]->Fill(mass[j]); passID = 1;}
+                if(isTriggered1[j]) {hTrigEtaPass[m]->Fill(mass[j]); passTrg = 1;}
                 else hTrigEtaFail[m]->Fill(mass[j]);
                 TnPtreeTrg->Fill();
               }//trigger efficiency over
