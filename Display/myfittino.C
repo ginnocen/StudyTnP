@@ -33,8 +33,10 @@ void myfittino(){
 
   double mumulow=2.6;
   double mumuhigh=3.5;
-  double mumutrklow=2.6;
-  double mumutrkhigh=3.5;
+  double mumutrklow=1.;
+  double mumutrkhigh=5.;
+  
+  int rebin=1;
   
   RooRealVar mass("mass", "mass", mumutrklow, mumutrkhigh);
   mass.setBins(100);
@@ -43,7 +45,7 @@ void myfittino(){
   TH1D* hTrkPtFail;
   TH1D* hTrkPtAll;
 
-  TFile*finput=new TFile("../Code/ResultsData/foutput.root","read");
+  TFile*finput=new TFile("/afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputData.root","read");
   finput->cd();
 
   RooCategory sampleTrk("sampleTrk", "sampleTrk");
@@ -57,6 +59,11 @@ void myfittino(){
   hTrkPtPass = (TH1D*)finput->Get("hTrkPtPass0");
   hTrkPtFail = (TH1D*)finput->Get("hTrkPtFail0");
   hTrkPtAll = (TH1D*)finput->Get("hTrkPtAll0");
+  
+  hTrkPtPass->Rebin(rebin);
+  hTrkPtFail->Rebin(rebin);
+  hTrkPtAll->Rebin(rebin);
+  
 
   //make CB function
   RooRealVar mean_CB("mean_CB", "mean_CB", 3.1, 3.0, 3.2);
