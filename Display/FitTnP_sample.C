@@ -57,7 +57,8 @@ void FitTnP_sample(){
   TH1D* hTrkEtaFail[nMuEtaBin];
   TH1D* hTrkEtaAll[nMuEtaBin];
 */
-  TFile*finput=new TFile("foutput.root","read");
+  //TFile*finput=new TFile("/afs/cern.ch/user/g/ginnocen/public/foutputMC.root","read");
+  TFile*finput=new TFile("/afs/cern.ch/user/g/ginnocen/public/foutputData.root","read");
   finput->cd();
 
   RooCategory sampleTrk("sampleTrk", "sampleTrk");
