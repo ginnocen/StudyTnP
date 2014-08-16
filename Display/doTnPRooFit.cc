@@ -26,12 +26,10 @@ const int nMuPtBin = 7;
 const double MuPtBin[nMuPtBin+1] = {0.0,1.5,3.0,4.5,6.0,9.0,20.0,30.0};
 int numCPU = 6;
 bool quiet = false;
-//TString ninf = "../TnPOutMC.root";
-TString ninf = "../Code/Results/foutput.root";
-//TString noutf = "TnPRooFitMC.root";
-TString noutf = "TnPRooFit.root";
-//TString plotfolder = "PlotsRooFitMC";
-TString plotfolder = "PlotsRooFit";
+TString ninf = "../Code/ResultsData/foutput.root";
+TString noutf = "ResultsData/TnPRooFit.root";
+TString plotfolder = "PlotsRooFitData";
+//TString plotfolder = "PlotsRooFit";
 
 void doRooFit(double &npass, double &nfail, double &npass_err, double &nfail_err,
 TCanvas* cpass, TCanvas* cfail, TCanvas* call, double ptlow, double pthigh, TString tree_type,
