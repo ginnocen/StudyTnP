@@ -34,7 +34,7 @@ TString noutf = "TnPRooFit.root";
 TString plotfolder = "PlotsRooFit";
 
 void doRooFit(double &npass, double &nfail, double &npass_err, double &nfail_err,
-TCanvas* cpass, TCanvas* cfail, double ptlow, double pthigh, TString tree_type,
+TCanvas* cpass, TCanvas* cfail, TCanvas* call, double ptlow, double pthigh, TString tree_type,
 int pdfset
 ){
   TFile *f = new TFile(ninf); 
@@ -171,6 +171,28 @@ cout<<data_setFail->sumEntries()<<endl;
   t1.DrawLatex(0.17, 0.75, Form("p_{T} = %.1f ~ %.1f GeV", ptlow, pthigh));
   nfail = nsigFail.getVal();
   nfail_err = nsigFail.getError();
+
+  RooPlot *frame3 = mass.frame();
+  combData.plotOn(frame3, Binning(100));
+  simPdf.plotOn(frame3,ProjWData(sample,combData));
+  if(pdfset == 1){
+    simPdf.plotOn(frame3,Components("signal_CB_Pass, signal_CB_Fail"),ProjWData(sample,combData),LineStyle(kDashed), LineColor(kGreen));
+    simPdf.plotOn(frame3,Components("background_cheb_Pass, background_cheb_Fail"),ProjWData(sample,combData),LineStyle(kDashed), LineColor(kRed));
+  }
+  if(pdfset == 2){
+    simPdf.plotOn(frame3,Components("signal_CB_Pass, signal_CB_Fail"),ProjWData(sample,combData),LineStyle(kDashed), LineColor(kGreen));
+    simPdf.plotOn(frame3,Components("background_exp_Fail, background_exp_Fail"),ProjWData(sample,combData),LineStyle(kDashed), LineColor(kRed));
+  }
+  if(pdfset == 3){
+    simPdf.plotOn(frame3,Components("signal_gaus_Pass, signal_gaus_Fail"),ProjWData(sample,combData),LineStyle(kDashed), LineColor(kGreen));
+    simPdf.plotOn(frame3,Components("background_cheb_Pass, background_cheb_Fail"),ProjWData(sample,combData),LineStyle(kDashed), LineColor(kRed));
+  }
+  call->cd();
+  frame3->Draw();
+  frame3->SetYTitle("");
+  t1.DrawLatex(0.17, 0.85, "All probes");
+  t1.DrawLatex(0.17, 0.80, "efficiency = "+tree_type);
+  t1.DrawLatex(0.17, 0.75, Form("p_{T} = %.1f ~ %.1f GeV", ptlow, pthigh));
 }
 
 void doTnPRooFit(){
@@ -180,6 +202,9 @@ void doTnPRooFit(){
   TCanvas *croofit_trg_fail[nMuPtBin];
   TCanvas *croofit_trk_fail[nMuPtBin];
   TCanvas *croofit_id_fail[nMuPtBin];
+  TCanvas *croofit_trg_all[nMuPtBin];
+  TCanvas *croofit_trk_all[nMuPtBin];
+  TCanvas *croofit_id_all[nMuPtBin];
   TH1D* eff_trg = myTH1D("eff_trg", "Mu Pt (GeV)", "efficiency", 2, nMuPtBin, MuPtBin);
   TH1D* eff_trk = myTH1D("eff_trk", "Mu Pt (GeV)", "efficiency", 3, nMuPtBin, MuPtBin);
   TH1D* eff_id = myTH1D("eff_id", "Mu Pt (GeV)", "efficiency", 4, nMuPtBin, MuPtBin);
@@ -188,17 +213,20 @@ void doTnPRooFit(){
   for(int i = 0; i < nMuPtBin; i++){
     croofit_trg_pass[i] = new TCanvas(Form("croofit_trg_pass%d", i), "", 600, 600);
     croofit_trg_fail[i] = new TCanvas(Form("croofit_trg_fail%d", i), "", 600, 600);
+    croofit_trg_all[i] = new TCanvas(Form("croofit_trg_all%d", i), "", 600, 600);
     croofit_trk_pass[i] = new TCanvas(Form("croofit_trk_pass%d", i), "", 600, 600);
     croofit_trk_fail[i] = new TCanvas(Form("croofit_trk_fail%d", i), "", 600, 600);
+    croofit_trk_all[i] = new TCanvas(Form("croofit_trk_all%d", i), "", 600, 600);
     croofit_id_pass[i] = new TCanvas(Form("croofit_id_pass%d", i), "", 600, 600);
     croofit_id_fail[i] = new TCanvas(Form("croofit_id_fail%d", i), "", 600, 600);
-    doRooFit(npass, nfail, npass_err, nfail_err, croofit_trg_pass[i], croofit_trg_fail[i], MuPtBin[i], MuPtBin[i+1], "Trg", 2); 
+    croofit_id_all[i] = new TCanvas(Form("croofit_id_all%d", i), "", 600, 600);
+    doRooFit(npass, nfail, npass_err, nfail_err, croofit_trg_pass[i], croofit_trg_fail[i], croofit_trg_all[i], MuPtBin[i], MuPtBin[i+1], "Trg", 2); 
     eff_trg->SetBinContent(i+1, npass/(npass+nfail));
     eff_trg->SetBinError(i+1, 0.00001);
-    doRooFit(npass, nfail, npass_err, nfail_err, croofit_trk_pass[i], croofit_trk_fail[i], MuPtBin[i], MuPtBin[i+1], "Trk", 3); 
+    doRooFit(npass, nfail, npass_err, nfail_err, croofit_trk_pass[i], croofit_trk_fail[i], croofit_trk_all[i], MuPtBin[i], MuPtBin[i+1], "Trk", 3); 
     eff_trk->SetBinContent(i+1, npass/(npass+nfail));
     eff_trk->SetBinError(i+1, 0.00001);
-    doRooFit(npass, nfail, npass_err, nfail_err, croofit_id_pass[i], croofit_id_fail[i], MuPtBin[i], MuPtBin[i+1], "ID", 1); 
+    doRooFit(npass, nfail, npass_err, nfail_err, croofit_id_pass[i], croofit_id_fail[i], croofit_id_all[i], MuPtBin[i], MuPtBin[i+1], "ID", 1); 
 //    doRooFit(npass, nfail, npass_err, nfail_err, croofit_id_pass[i], croofit_id_fail[i], MuPtBin[i], MuPtBin[i+1], "ID", 2); 
     eff_id->SetBinContent(i+1, npass/(npass+nfail));
     eff_id->SetBinError(i+1, 0.00001);
@@ -236,12 +264,18 @@ void doTnPRooFit(){
     croofit_trg_fail[i]->Write();
     croofit_trk_fail[i]->Write();
     croofit_id_fail[i]->Write();
+    croofit_trg_all[i]->Write();
+    croofit_trk_all[i]->Write();
+    croofit_id_all[i]->Write();
     croofit_trg_pass[i]->SaveAs(Form("%s/croofit_trg_pass_%d.pdf",plotfolder.Data(), i));
     croofit_trk_pass[i]->SaveAs(Form("%s/croofit_trk_pass_%d.pdf",plotfolder.Data(), i));
     croofit_id_pass[i]->SaveAs(Form("%s/croofit_id_pass_%d.pdf",plotfolder.Data(), i));
     croofit_trg_fail[i]->SaveAs(Form("%s/croofit_trg_fail_%d.pdf",plotfolder.Data(), i));
     croofit_trk_fail[i]->SaveAs(Form("%s/croofit_trk_fail_%d.pdf",plotfolder.Data(), i));
     croofit_id_fail[i]->SaveAs(Form("%s/croofit_id_fail_%d.pdf",plotfolder.Data(), i));
+    croofit_trg_all[i]->SaveAs(Form("%s/croofit_trg_all_%d.pdf",plotfolder.Data(), i));
+    croofit_trk_all[i]->SaveAs(Form("%s/croofit_trk_all_%d.pdf",plotfolder.Data(), i));
+    croofit_id_all[i]->SaveAs(Form("%s/croofit_id_all_%d.pdf",plotfolder.Data(), i));
   }
   outf->Close();
 }
