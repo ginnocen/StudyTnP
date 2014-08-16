@@ -11,7 +11,7 @@ void fitJpsi(bool isDataInput=true){
   int nBin = 400;
   double mumulow=1.0;
   double mumuhigh=5.0;
-  double mumuTrklow=2.0;
+  double mumuTrklow=1.0;
   double mumuTrkhigh=5.0;
 
 
