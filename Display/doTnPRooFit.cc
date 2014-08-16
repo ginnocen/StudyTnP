@@ -39,7 +39,8 @@ int pdfset
   TTree* TnPtree;
   TnPtree = (TTree*)f->Get("TnPtree"+tree_type);
 
-  RooRealVar mass("mass","mass [GeV]", 2.6, 3.5);
+  //RooRealVar mass("mass","mass [GeV]", 2.6, 3.5);
+  RooRealVar mass("mass","mass [GeV]", 2., 5.);
   RooRealVar pass("pass","pass", 0, 1);
   RooRealVar pt("pt","pt",0,100);	
   RooRealVar eta("eta","eta",-5,5);	
