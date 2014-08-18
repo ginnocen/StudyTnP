@@ -8,9 +8,16 @@
 
 void fitJpsi(bool isDataInput=true){
 
+  int nBin = 400;
+  double mumulow=1.0;
+  double mumuhigh=5.0;
+  double mumuTrklow=1.0;
+  double mumuTrkhigh=5.0;
+
+
   TString outputfile;
-  if(isDataInput) outputfile="ResultsData/foutput.root";
-  else outputfile="ResultsMC/foutput.root";
+  if(isDataInput) outputfile="/afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputData.root";
+  else outputfile="/afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputMC.root";
   TFile*foutput=new TFile(outputfile.Data(),"recreate");
   double massTrg, massTrk, massID;
   double passTrg, passTrk, passID;
@@ -41,13 +48,7 @@ void fitJpsi(bool isDataInput=true){
   const int nMuEtaBin = 5;
   const double MuPtBin[nMuPtBin+1] = {0.0,1.5,3.0,4.5,6.0,9.0,20.0,30.0};
   const double MuEtaBin[nMuEtaBin+1] = {-2.4,-1.5,-0.5,0.5,1.5,2.4};
-  
-  int nBin = 100;
-  double mumulow=2.6;
-  double mumuhigh=3.5;
-  double mumuTrklow=2.0;
-  double mumuTrkhigh=5.0;
-  
+    
   Bool_t IsMuonInAcceptance(Float_t,Float_t,Float_t);
   Bool_t IsTag(Bool_t, Int_t, Bool_t, Bool_t);
   
