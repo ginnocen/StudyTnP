@@ -24,10 +24,19 @@ You can find below the steps you have to follow to perform the full study.
                 The input file name are UP TO DATE!
                 VERY IMPORTANT: YOU HAVE TO DEFINE WHERE TO PUT YOUR OUTPUT IN line 18 and 19.
               
-**Step 1) Display/fitJPsi.C** 
+**Step 2) Display/FitTnP_sample.C** 
 
+**Input**: output of fitJPsi.C, please REMIND to update the input files name in the code. 
+           If not, it will use as an input /afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputData.root
+           that is the current result for data. 
+           (the current result for MC is /afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputMC.root)
 
-[Setup]
+**What it does**: it does the simultaneous fit of passing, failing, all probes for Trg, Trk, MuonId 
+                  studies vs pt and eta and it produces corresponding efficiencies.
 
-source /afs/cern.ch/sw/lcg/external/gcc/4.3.2/x86_64-slc5/setup.sh
-source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.02/x86_64-slc5-gcc43-opt/root/bin/thisroot.sh
+**How to run?** MAKE sure of the input file names are ok. 
+                then launch :
+                root 
+                source /afs/cern.ch/sw/lcg/external/gcc/4.3.2/x86_64-slc5/setup.sh
+                source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.02/x86_64-slc5-gcc43-opt/root/bin/thisroot.sh
+                .x FitTnP_sample.C
