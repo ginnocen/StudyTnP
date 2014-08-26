@@ -24,7 +24,7 @@ You can find below the steps you have to follow to perform the full study.
                 .L fitJPsi.C+
                 fitJPsi(true) for running on data, fitJPsi(false) for running on MC
 
-                The input file name are UP TO DATE!
+             The input file name are UP TO DATE!
                 VERY IMPORTANT: YOU HAVE TO DEFINE WHERE TO PUT YOUR OUTPUT IN line 18 and 19.
               
 **Step 2) Display/FitTnP_sample.C** 
@@ -40,8 +40,9 @@ You can find below the steps you have to follow to perform the full study.
 **How to run?** MAKE sure of the input file names are ok. 
                 then launch :
                 
-                root 
-                
+                cd Display
                 source /afs/cern.ch/sw/lcg/external/gcc/4.3.2/x86_64-slc5/setup.sh
                 source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.02/x86_64-slc5-gcc43-opt/root/bin/thisroot.sh
+
+                root 
                 .x FitTnP_sample.C
