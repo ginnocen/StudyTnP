@@ -22,10 +22,11 @@ You can find below the steps you have to follow to perform the full study.
                 cd Code
                 root 
                 .L fitJPsi.C+
-                fitJPsi(true) for running on data, fitJPsi(false) for running on MC
+                fitJPsi(true) for running on data
+                fitJPsi(false) for running on MC
 
-             The input file name are UP TO DATE!
-                VERY IMPORTANT: YOU HAVE TO DEFINE WHERE TO PUT YOUR OUTPUT IN line 18 and 19.
+The input file name are UP TO DATE!
+VERY IMPORTANT: YOU HAVE TO DEFINE WHERE TO PUT YOUR OUTPUT IN line 18 and 19.
               
 **Step 2) Display/FitTnP_sample.C** 
 
