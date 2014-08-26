@@ -1,13 +1,9 @@
-[Setup]
-
-source /afs/cern.ch/sw/lcg/external/gcc/4.3.2/x86_64-slc5/setup.sh
-source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.02/x86_64-slc5-gcc43-opt/root/bin/thisroot.sh
 
 This repository aims to perform Tag and Probe studies starting from the code available here 
 Bntuple: https://github.com/boundino/Bntuple.
 You can find below the steps you have to follow to perform the full study.
 
-**1) Code/fitJPsi.C** 
+**Step 1) Code/fitJPsi.C** 
 
 **Input**: This code gets as inputs ntuples in which all the variables related to the jspi candidates are 
            stored: e.g. Jpsi mass, pt, eta and all the variables related to the two muons used to build the 
@@ -21,4 +17,17 @@ You can find below the steps you have to follow to perform the full study.
              as TTree for trg, trk and MuonID separately that can be also used for fitting pourpose
              (the current code we are developing uses histograms and not TTree)
 
-**How to run?** 
+**How to run?** cd Code
+                root 
+                .L fitJPsi.C+
+                fitJPsi(true) for running on data, fitJPsi(false) for running on MC
+                The input file name are UP TO DATE!
+                VERY IMPORTANT: YOU HAVE TO DEFINE WHERE TO PUT YOUR OUTPUT IN line 18 and 19.
+              
+**Step 1) Display/fitJPsi.C** 
+
+
+[Setup]
+
+source /afs/cern.ch/sw/lcg/external/gcc/4.3.2/x86_64-slc5/setup.sh
+source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.02/x86_64-slc5-gcc43-opt/root/bin/thisroot.sh
