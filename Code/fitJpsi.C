@@ -9,11 +9,10 @@
 void fitJpsi(bool isDataInput=true){
 
   int nBin = 400;
-  double mumulow=1.0;
-  double mumuhigh=5.0;
-  double mumuTrklow=1.0;
+  double mumulow=2.6;
+  double mumuhigh=3.5;
+  double mumuTrklow=2.0;
   double mumuTrkhigh=5.0;
-
 
   TString outputfile;
   if(isDataInput) outputfile="/afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputData.root";
