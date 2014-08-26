@@ -17,10 +17,13 @@ You can find below the steps you have to follow to perform the full study.
              as TTree for trg, trk and MuonID separately that can be also used for fitting pourpose
              (the current code we are developing uses histograms and not TTree)
 
-**How to run?** cd Code
+**How to run?** :
+
+                cd Code
                 root 
                 .L fitJPsi.C+
                 fitJPsi(true) for running on data, fitJPsi(false) for running on MC
+
                 The input file name are UP TO DATE!
                 VERY IMPORTANT: YOU HAVE TO DEFINE WHERE TO PUT YOUR OUTPUT IN line 18 and 19.
               
