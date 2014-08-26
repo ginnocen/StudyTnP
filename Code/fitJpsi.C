@@ -15,8 +15,8 @@ void fitJpsi(bool isDataInput=true){
   double mumuTrkhigh=5.0;
 
   TString outputfile;
-  if(isDataInput) outputfile="";
-  else outputfile="";
+  if(isDataInput) outputfile="foutputData.root";
+  else outputfile="foutputMC.root";
   TFile*foutput=new TFile(outputfile.Data(),"recreate");
   double massTrg, massTrk, massID;
   double passTrg, passTrk, passID;
