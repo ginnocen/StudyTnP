@@ -15,8 +15,8 @@ void fitJpsi(bool isDataInput=true){
   double mumuTrkhigh=5.0;
 
   TString outputfile;
-  if(isDataInput) outputfile="/afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputData.root";
-  else outputfile="/afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputMC.root";
+  if(isDataInput) outputfile="";
+  else outputfile="";
   TFile*foutput=new TFile(outputfile.Data(),"recreate");
   double massTrg, massTrk, massID;
   double passTrg, passTrk, passID;
