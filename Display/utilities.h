@@ -1,3 +1,5 @@
+#include <iostream>
+#include <utility>
 #include <math.h>
 #include <TH1.h>
 #include <TH2.h>
@@ -14,6 +16,8 @@
 #include <TGraphAsymmErrors.h>
 #include <TStyle.h>
 #include <TLatex.h>
+#include <TString.h>
+#include "format.h"
 
 #define MAX_MUON 64
 #define MUON_MASS   0.10565837
@@ -29,7 +33,7 @@ TLatex myLatex(){
 }
 
 
-TH1D* myTH1D(string th1name, string xtitle, string ytitle, int _color, int nMuPtBin, const double MuPtBin[]){
+TH1D* myTH1D(std::string th1name, std::string xtitle, std::string ytitle, int _color, int nMuPtBin, const double MuPtBin[]){
   TH1D* eff = new TH1D(th1name.c_str(), "", nMuPtBin, MuPtBin);
   eff->SetMinimum(0);
   eff->SetMaximum(1.2);
@@ -41,7 +45,7 @@ TH1D* myTH1D(string th1name, string xtitle, string ytitle, int _color, int nMuPt
   return eff;
 };
 
-TF1 *myTF1(string tf1name, double blow, double bhigh){
+TF1 *myTF1(std::string tf1name, double blow, double bhigh){
   TF1 *mytf1 = new TF1(tf1name.c_str(),"[0]*([4]*Gaus(x,[1],[2])/(sqrt(2*3.14159)*[2])+(1-[4])*Gaus(x,[1],[3])/(sqrt(2*3.14159)*[3]))+[5]+[6]*x");
 //  TF1 *mytf1 = new TF1(tf1name.c_str(),"[0]*([4]*Gaus(x,[1],[2])/(sqrt(2*3.14159)*[2])+(1-[4])*Gaus(x,[1],[3])/(sqrt(2*3.14159)*[3]))");
   mytf1->SetParameter(1,3.097);

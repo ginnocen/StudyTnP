@@ -1,8 +1,4 @@
-#include "TFile.h"
-#include "TTree.h"
-#include "TString.h"
-#include <TCanvas.h>
-#include "TH1D.h"
+#include "utilities.h"
 
 #include <RooRealVar.h>
 #include <RooDataHist.h>
@@ -20,18 +16,28 @@
 #include <RooCategory.h>
 #include <RooSimultaneous.h>
 
-#define NUM_BX 9000
-
+bool isDataInput = true;
+//bool isDataInput = false;
 
 void FitTnP_sample(){
+
+  TFile*finput=new TFile("../../TnPfiles/foutputData.root","read");
+  TString plotfolder = "PlotsBinFitData";
+  if(!isDataInput){
+    finput=new TFile("../../TnPfiles/foutputMC.root","read");
+    plotfolder = "PlotsBinFitMC";
+  }
+  finput->cd();
 
   using namespace std;
   using namespace RooFit;
 
   int numCPU = 6;
   bool quiet = false;
+  //bool quiet = true;
 
   const int nMuPtBin = 7;
+  const double MuPtBin[nMuPtBin+1] = {0.0,1.5,3.0,4.5,6.0,9.0,20.0,30.0};
   //const int nMuEtaBin = 5;
 
   double mumulowMuId[nMuPtBin] = {2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6};
@@ -41,28 +47,33 @@ void FitTnP_sample(){
   double mumutrklow[nMuPtBin] = {2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0};
   double mumutrkhigh[nMuPtBin] = {5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0};
   
-
   //Crystall Ball parameters
   ////for trigger efficiency
   double CB_trg_Pt_mean_min[nMuPtBin] = {3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0};
   double CB_trg_Pt_mean_max[nMuPtBin] = {3.2, 3.2, 3.2, 3.2, 3.2, 3.2, 3.2};
   double CB_trg_Pt_alpha_mean[nMuPtBin] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
-  double CB_trg_Pt_alpha_min[nMuPtBin] = {2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0};
-  double CB_trg_Pt_alpha_max[nMuPtBin] = {5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0};
-  double CB_trg_Pt_sigma[nMuPtBin] = {0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05};
+  double CB_trg_Pt_alpha_min[nMuPtBin] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  double CB_trg_Pt_alpha_max[nMuPtBin] = {10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0};
   double CB_trg_Pt_n_mean[nMuPtBin] ={1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   double CB_trg_Pt_n_min[nMuPtBin] = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
   double CB_trg_Pt_n_max[nMuPtBin] = {100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0};
+  double CB_trg_Pt_sigma[nMuPtBin] = {0.00, 0.005, 0.005, 0.05, 0.05, 0.05, 0.05};
+  double CB_trg_Pt_sigma_min[nMuPtBin] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  double CB_trg_Pt_sigma_max[nMuPtBin] = {1, 1, 1, 1, 1, 1, 1};
+
   ////for Muon ID efficiency
   double CB_MuId_Pt_mean_min[nMuPtBin] = {3.07, 3.07, 3.05, 3.0, 3.0, 3.0, 3.0};
   double CB_MuId_Pt_mean_max[nMuPtBin] = {3.12, 3.12, 3.15, 3.2, 3.2, 3.2, 3.2};
   double CB_MuId_Pt_alpha_mean[nMuPtBin] = {4.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
-  double CB_MuId_Pt_alpha_min[nMuPtBin] = {3.0, 1.0, 2.0, 1.0, 2.0, 2.0, 2.0};
-  double CB_MuId_Pt_alpha_max[nMuPtBin] = {5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 5.0};
-  double CB_MuId_Pt_sigma[nMuPtBin] = {0.044, 0.001, 0.01, 0.05, 0.05, 0.05, 0.05};
-  double CB_MuId_Pt_n_mean[nMuPtBin] ={10.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+  double CB_MuId_Pt_alpha_min[nMuPtBin] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  double CB_MuId_Pt_alpha_max[nMuPtBin] = {10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0};
+  double CB_MuId_Pt_n_mean[nMuPtBin] ={10.0, 5.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   double CB_MuId_Pt_n_min[nMuPtBin] = {5.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
-  double CB_MuId_Pt_n_max[nMuPtBin] = {50.0, 100.0, 100.0, 200.0, 100.0, 100.0, 100.0};
+  double CB_MuId_Pt_n_max[nMuPtBin] = {50.0, 50.0, 100.0, 200.0, 100.0, 100.0, 100.0};
+  double CB_MuId_Pt_sigma[nMuPtBin] = {0.044, 0.001, 0.01, 0.05, 0.05, 0.05, 0.05};
+  //double CB_MuId_Pt_sigma_min[nMuPtBin] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  //double CB_MuId_Pt_sigma_max[nMuPtBin] = {0.1, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1};
+
   //Gaussian parameters
   double G_Pt_min[nMuPtBin] = {3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0};
   double G_Pt_max[nMuPtBin] = {3.2, 3.2, 3.2, 3.2, 3.2, 3.2, 3.2};
@@ -79,18 +90,19 @@ void FitTnP_sample(){
   //Chebychev parameters
   ////for Muon ID efficiency
   double Cheb_MuId_Pt_p1_Pass_mean[nMuPtBin] = {-0.80, 0., 0., 0., 0., 0., 0.};
-  double Cheb_MuId_Pt_p1_Pass_min[nMuPtBin] = {-0.1, -1., -1., -1., -1., -1., -1.};
-  double Cheb_MuId_Pt_p1_Pass_max[nMuPtBin] = {+0.0, +1., +1., +1., +1., +1., +1.};
+  double Cheb_MuId_Pt_p1_Pass_min[nMuPtBin] = {-1., -1., -1., -1., -1., -1., -1.};
+  double Cheb_MuId_Pt_p1_Pass_max[nMuPtBin] = {+1., +1., +1., +1., +1., +1., +1.};
   double Cheb_MuId_Pt_p1_Fail_mean[nMuPtBin] = {0.05, 0., 0., 0., 0., 0., 0.};
-  double Cheb_MuId_Pt_p1_Fail_min[nMuPtBin] = {0.0, -1., -1., -1., -1., -1., -1.};
-  double Cheb_MuId_Pt_p1_Fail_max[nMuPtBin] = {+0.1, +1., +1., +1., +1., +1., +1.};
+  double Cheb_MuId_Pt_p1_Fail_min[nMuPtBin] = {-1., -1., -1., -1., -1., -1., -1.};
+  double Cheb_MuId_Pt_p1_Fail_max[nMuPtBin] = {+1., +1., +1., +1., +1., +1., +1.};
 
   double Cheb_MuId_Pt_p2_Pass_mean[nMuPtBin] = {-0.002, 0., 0., 0., 0., 0., 0.};
-  double Cheb_MuId_Pt_p2_Pass_min[nMuPtBin] = {-0.01, -1., -1., -1., -1., -1., -1.};
-  double Cheb_MuId_Pt_p2_Pass_max[nMuPtBin] = {+0.0, +1., +1., +1., +1., +1., +1.};
+  double Cheb_MuId_Pt_p2_Pass_min[nMuPtBin] = {-1., -1., -1., -1., -1., -1., -1.};
+  double Cheb_MuId_Pt_p2_Pass_max[nMuPtBin] = {+1., +1., +1., +1., +1., +1., +1.};
   double Cheb_MuId_Pt_p2_Fail_mean[nMuPtBin] = {0.002, 0., 0., 0., 0., 0., 0.};
-  double Cheb_MuId_Pt_p2_Fail_min[nMuPtBin] = {-0.01, -1., -1., -1., -1., -1., -1.};
-  double Cheb_MuId_Pt_p2_Fail_max[nMuPtBin] = {+0.0, +1., +1., +1., +1., +1., +1.};
+  double Cheb_MuId_Pt_p2_Fail_min[nMuPtBin] = {-1., -1., -1., -1., -1., -1., -1.};
+  double Cheb_MuId_Pt_p2_Fail_max[nMuPtBin] = {+1., +1., +1., +1., +1., +1., +1.};
+
   ////for tracking efficinecy
   double Cheb_trk_Pt_p1_Pass_mean[nMuPtBin] = {0., 0., 0., 0., 0., 0., 0.};
   double Cheb_trk_Pt_p1_Pass_min[nMuPtBin] = {-1., -1., -1., -1., -1., -1., -1.};
@@ -107,12 +119,12 @@ void FitTnP_sample(){
   double Cheb_trk_Pt_p2_Fail_max[nMuPtBin] = {+1., +1., +1., +1., +1., +1., +1.};
 
   //exponential parameters
-  double lp_Pt_mean[nMuPtBin] = {0., 0., 0., 0., 0., 0., 0.};
-  double lp_Pt_min[nMuPtBin] = {-5., -5., -5., -5., -5., -5., -5.};
-  double lp_Pt_max[nMuPtBin] = {5., 5., 5., 5., 5., 5., 5.};
+  double lp_Pt_mean[nMuPtBin] = {-5., 0., 0., 0., 0., 0., 0.};
+  double lp_Pt_min[nMuPtBin] = {-10., -10., -5., -5., -5., -5., -5.};
+  double lp_Pt_max[nMuPtBin] = {10., 10., 5., 5., 5., 5., 5.};
   double lf_Pt_mean[nMuPtBin] = {0., 0., 0., 0., 0., 0., 0.};
-  double lf_Pt_min[nMuPtBin] = {-5., -5., -5., -5., -5., -5., -5.};
-  double lf_Pt_max[nMuPtBin] = {5., 5., 5., 5., 5., 5., 5.};
+  double lf_Pt_min[nMuPtBin] = {-10., -10., -5., -5., -5., -5., -5.};
+  double lf_Pt_max[nMuPtBin] = {10., 10., 5., 5., 5., 5., 5.};
 
   //make canvas
   ////tracking efficiency
@@ -143,14 +155,10 @@ void FitTnP_sample(){
   TH1D* hTrkEtaFail[nMuEtaBin];
   TH1D* hTrkEtaAll[nMuEtaBin];
 */
-//<<<<<<< HEAD
-//  TFile*finput=new TFile("../Code/ResultsData/foutput.root","read");
-//=======
-  //TFile*finput=new TFile("/afs/cern.ch/user/g/ginnocen/public/foutputMC.root","read");
-  //TFile*finput=new TFile("/afs/cern.ch/user/g/ginnocen/public/foutputData.root","read");
-  TFile*finput=new TFile("/afs/cern.ch/user/g/ginnocen/public/TnPResults/foutputData.root","read");
-//>>>>>>> e5327bea8665878bed54a0d7a4de75cd7a47cb79
-  finput->cd();
+
+  TH1D* EffTrig = myTH1D("EffTrig", "Mu Pt (GeV)", "efficiency", 2, nMuPtBin, MuPtBin);
+  TH1D* EffTrk = myTH1D("EffTrk", "Mu Pt (GeV)", "efficiency", 3, nMuPtBin, MuPtBin);
+  TH1D* EffMuId = myTH1D("EffMuId", "Mu Pt (GeV)", "efficiency", 4, nMuPtBin, MuPtBin);
 
   //make categrory
   ////tracking efficiency
@@ -168,6 +176,7 @@ void FitTnP_sample(){
 
   //get pt histogram
   for(int i = 0; i < nMuPtBin; i++)
+//  for(int i = 1; i < 2; i++)
   {
     RooRealVar masstrk("masstrk", "masstrk", mumutrklow[i], mumutrkhigh[i]);
     masstrk.setBins(100);
@@ -233,6 +242,7 @@ void FitTnP_sample(){
 
     //make CB function for trigger efficiency
     RooRealVar mean_CB_trg("mean_CB_trg", "mean_CB_trg", 3.1, CB_trg_Pt_mean_min[i], CB_trg_Pt_mean_max[i]);
+    //RooRealVar sigma_CB_trg("sigma_CB_trg", "sigma_CB_trg", CB_trg_Pt_sigma[i], CB_trg_Pt_sigma_min[i], CB_trg_Pt_sigma_max[i]);
     RooRealVar sigma_CB_trg("sigma_CB_trg", "sigma_CB_trg", CB_trg_Pt_sigma[i]);
     sigma_CB_trg.setConstant(kFALSE);
     RooRealVar alpha_CB_trg("alpha_CB_trg", "alpha_CB_trg", CB_trg_Pt_alpha_mean[i], CB_trg_Pt_alpha_min[i], CB_trg_Pt_alpha_max[i]);
@@ -243,6 +253,7 @@ void FitTnP_sample(){
 
     //make CB function for Muon ID efficiency
     RooRealVar mean_CB_MuId("mean_CB_MuId", "mean_CB_MuId", 3.1, CB_MuId_Pt_mean_min[i], CB_MuId_Pt_mean_max[i]);
+    //RooRealVar sigma_CB_MuId("sigma_CB_MuId", "sigma_CB_MuId", CB_MuId_Pt_sigma[i], CB_MuId_Pt_sigma_min[i], CB_MuId_Pt_sigma_max[i]);
     RooRealVar sigma_CB_MuId("sigma_CB_MuId", "sigma_CB_MuId", CB_MuId_Pt_sigma[i]);
     sigma_CB_MuId.setConstant(kFALSE);
     RooRealVar alpha_CB_MuId("alpha_CB_MuId", "alpha_CB_MuId", CB_MuId_Pt_alpha_mean[i], CB_MuId_Pt_alpha_min[i], CB_MuId_Pt_alpha_max[i]);
@@ -390,8 +401,8 @@ void FitTnP_sample(){
     simTrgPdf.addPdf(model_CB_exp_Pass, "Pass");
     simTrgPdf.addPdf(model_CB_exp_Fail, "Fail");
 
-    simTrkPdf.fitTo(dataTrkAllset, Extended(true), NumCPU(numCPU), PrintLevel(quiet?-1:1), Warnings(!quiet));
-    simMuIdPdf.fitTo(dataMuIdAllset, Extended(true), NumCPU(numCPU), PrintLevel(quiet?-1:1), Warnings(!quiet));
+//    simTrkPdf.fitTo(dataTrkAllset, Extended(true), NumCPU(numCPU), PrintLevel(quiet?-1:1), Warnings(!quiet));
+//    simMuIdPdf.fitTo(dataMuIdAllset, Extended(true), NumCPU(numCPU), PrintLevel(quiet?-1:1), Warnings(!quiet));
     simTrgPdf.fitTo(dataTrgAllset, Extended(true), NumCPU(numCPU), PrintLevel(quiet?-1:1), Warnings(!quiet));
 
     //draw tracking efficiency mass distribution
@@ -404,7 +415,7 @@ void FitTnP_sample(){
 
     ctrkpass->cd();
     frameTrkPass->Draw();
-    ctrkpass->SaveAs(Form("Trk_Pt_bin%d_Pass.pdf", i));
+    ctrkpass->SaveAs(Form("%s/Trk_Pt_bin%d_Pass.pdf", plotfolder.Data(), i));
 
     ////fail
     RooPlot *frameTrkFail = masstrk.frame();
@@ -416,7 +427,7 @@ void FitTnP_sample(){
 
     ctrkfail->cd();
     frameTrkFail->Draw();
-    ctrkfail->SaveAs(Form("Trk_Pt_bin%d_Fail.pdf", i));
+    ctrkfail->SaveAs(Form("%s/Trk_Pt_bin%d_Fail.pdf", plotfolder.Data(), i));
 
     ////all
     RooPlot *frameTrkAll = masstrk.frame();
@@ -428,7 +439,7 @@ void FitTnP_sample(){
 
     ctrkall->cd();
     frameTrkAll->Draw();
-    ctrkall->SaveAs(Form("Trk_Pt_bin%d_All.pdf", i));
+    ctrkall->SaveAs(Form("%s/Trk_Pt_bin%d_All.pdf", plotfolder.Data(), i));
 
     //draw MuonId efficiency mass distribution
     ////pass
@@ -441,7 +452,7 @@ void FitTnP_sample(){
 
     cMuIdpass->cd();
     frameMuIdPass->Draw();
-    cMuIdpass->SaveAs(Form("MuId_Pt_bin%d_Pass.pdf", i));
+    cMuIdpass->SaveAs(Form("%s/MuId_Pt_bin%d_Pass.pdf", plotfolder.Data(), i));
 
     ////fail
     RooPlot *frameMuIdFail = massMuId.frame();
@@ -453,7 +464,7 @@ void FitTnP_sample(){
 
     cMuIdfail->cd();
     frameMuIdFail->Draw();
-    cMuIdfail->SaveAs(Form("MuId_Pt_bin%d_Fail.pdf", i));
+    cMuIdfail->SaveAs(Form("%s/MuId_Pt_bin%d_Fail.pdf", plotfolder.Data(), i));
 
     ////all
     RooPlot *frameMuIdAll = massMuId.frame();
@@ -465,7 +476,7 @@ void FitTnP_sample(){
 
     cMuIdall->cd();
     frameMuIdAll->Draw();
-    cMuIdall->SaveAs(Form("MuId_Pt_bin%d_All.pdf", i));
+    cMuIdall->SaveAs(Form("%s/MuId_Pt_bin%d_All.pdf", plotfolder.Data(), i));
 
     //draw trigger efficiency mass distribution
     ////pass
@@ -478,7 +489,7 @@ void FitTnP_sample(){
 
     ctrgpass->cd();
     frameTrgPass->Draw();
-    ctrgpass->SaveAs(Form("Trg_Pt_bin%d_Pass.pdf", i));
+    ctrgpass->SaveAs(Form("%s/Trg_Pt_bin%d_Pass.pdf", plotfolder.Data(), i));
 
     ////fail
     RooPlot *frameTrgFail = masstrg.frame();
@@ -490,7 +501,7 @@ void FitTnP_sample(){
 
     ctrgfail->cd();
     frameTrgFail->Draw();
-    ctrgfail->SaveAs(Form("Trg_Pt_bin%d_Fail.pdf", i));
+    ctrgfail->SaveAs(Form("%s/Trg_Pt_bin%d_Fail.pdf", plotfolder.Data(), i));
 
     ////all
     RooPlot *frameTrgAll = masstrg.frame();
@@ -502,10 +513,42 @@ void FitTnP_sample(){
 
     ctrgall->cd();
     frameTrgAll->Draw();
-    ctrgall->SaveAs(Form("Trg_Pt_bin%d_All.pdf", i));
+    ctrgall->SaveAs(Form("%s/Trg_Pt_bin%d_All.pdf", plotfolder.Data(), i));
 
+    //Get efficiency
+    EffTrig->SetBinContent(i+1, efficiencytrg.getVal());
+    EffTrig->SetBinError(i+1, 0.00001);
+    EffTrk->SetBinContent(i+1, efficiencytrk.getVal());
+    EffTrk->SetBinError(i+1, 0.00001);
+    EffMuId->SetBinContent(i+1, efficiencyMuId.getVal());
+    EffMuId->SetBinError(i+1, 0.00001);
   }
-
+  //Save efficiency plots
+  TString outputfile;
+  TFile*foutput;
+  if(isDataInput)foutput=new TFile(Form("%s/foutputData.root",plotfolder.Data()),"recreate");
+  else foutput=new TFile(Form("%s/foutputMC.root",plotfolder.Data()),"recreate");
+  TCanvas *cforSave= new TCanvas("cforSave","",600,600);
+  cforSave->cd();
+  EffTrig->Draw("pe");
+  EffTrk->Draw("pe same");
+  EffMuId->Draw("pe same");
+  TLegend *leg = myLegend(0.6778523,0.399651,0.8775168,0.6073298);
+  leg->AddEntry(EffTrig, "Trig", "p");
+  leg->AddEntry(EffTrk, "Trk", "p");
+  leg->AddEntry(EffMuId, "ID", "p");
+  leg->Draw("same");
+  EffTrig->Write();
+  EffTrk->Write();
+  EffMuId->Write();
+  cforSave->SaveAs(Form("%s/eff.pdf",plotfolder.Data()));
+  cforSave->Write();
+  EffTrig->Draw("pe");
+  cforSave->SaveAs(Form("%s/EffTrig.pdf",plotfolder.Data()));
+  EffTrk->Draw("pe");
+  cforSave->SaveAs(Form("%s/EffTrk.pdf",plotfolder.Data()));
+  EffMuId->Draw("pe");
+  cforSave->SaveAs(Form("%s/EffMuId.pdf",plotfolder.Data()));
 
 /*
   for(int i = 0; i < nMuEtaBin; i++)
